@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 const DateTimePicker = ({ 
@@ -7,10 +7,18 @@ const DateTimePicker = ({
   onClose 
 }) => {
   const [date, setDate] = useState(initialDateTime || new Date());
-  // 編集時のタスクに時間が設定されている場合のみ、その値を使用
-  const [useTime, setUseTime] = useState(initialDateTime?.hasTime || false);
-  const [hours, setHours] = useState(initialDateTime?.hasTime ? initialDateTime.getHours().toString() : '');
-  const [minutes, setMinutes] = useState(initialDateTime?.hasTime ? initialDateTime.getMinutes().toString() : '');
+  const [useTime, setUseTime] = useState(false);
+  const [hours, setHours] = useState('');
+  const [minutes, setMinutes] = useState('');
+  
+  // コンポーネントマウント時に既存の時間設定を反映
+  useEffect(() => {
+    if (initialDateTime && initialDateTime.hasTime) {
+      setUseTime(true);
+      setHours(initialDateTime.getHours().toString());
+      setMinutes(initialDateTime.getMinutes().toString());
+    }
+  }, [initialDateTime]);
 
   // 年の選択肢（現在年から5年後まで）
   const years = useMemo(() => 
