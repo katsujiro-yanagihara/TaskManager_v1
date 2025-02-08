@@ -1,114 +1,261 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import React, { useState } from 'react';
+import { Plus, Trash2, Calendar, Check, GripVertical, Edit } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { format } from 'date-fns';
+import { ja } from 'date-fns/locale';
+import DateTimePicker from '../components/DateTimePicker';
+import { Clock } from 'lucide-react';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const TaskManager = () => {
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState('');
+  const [selectedDateTime, setSelectedDateTime] = useState(new Date());
+  const [hasTime, setHasTime] = useState(false);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const [editingDateTaskId, setEditingDateTaskId] = useState(null);
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+  const formatDateTime = (dateTime, hasTimeFlag) => {
+    if (!dateTime) return '';
+    const date = new Date(dateTime);
+    const dateStr = format(date, 'yyyy年M月d日(E)', { locale: ja });
+    if (!hasTimeFlag) return dateStr;
+    return format(date, 'yyyy年M月d日(E) HH:mm', { locale: ja });
+  };
 
-export default function Home() {
+  const addTask = (e) => {
+    e.preventDefault();
+    if (!newTask.trim()) return;
+
+    const task = {
+      id: Date.now().toString(),
+      title: newTask,
+      dueDate: selectedDateTime,
+      hasTime: hasTime,
+      completed: false
+    };
+
+    setTasks([task, ...tasks]);
+    setNewTask('');
+    setSelectedDateTime(new Date());
+    setHasTime(false);
+  };
+
+  const handleDateTimeSave = (dateTime, useTime) => {
+    if (editingDateTaskId) {
+      setTasks(tasks.map(task =>
+        task.id === editingDateTaskId ? {
+          ...task,
+          dueDate: dateTime,
+          hasTime: useTime
+        } : task
+      ));
+      setEditingDateTaskId(null);
+    } else {
+      setSelectedDateTime(dateTime);
+      setHasTime(useTime);
+    }
+    setIsDatePickerOpen(false);
+  };
+
+  const startEditing = (task) => {
+    setEditingTaskId(task.id);
+    setEditingTitle(task.title);
+  };
+  
+  const saveEdit = (taskId) => {
+    if (!editingTitle.trim()) return;
+    
+    setTasks(tasks.map(task => 
+      task.id === taskId 
+        ? { ...task, title: editingTitle }
+        : task
+    ));
+    
+    setEditingTaskId(null);
+    setEditingTitle('');
+  };
+
+  const toggleTask = (taskId) => {
+    setTasks(tasks.map(task =>
+      task.id === taskId ? { ...task, completed: !task.completed } : task
+    ));
+  };
+
+  const deleteTask = (taskId) => {
+    setTasks(tasks.filter(task => task.id !== taskId));
+  };
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(tasks);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setTasks(items);
+  };
+
   return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              pages/index.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-blue-50">
+      <header className="bg-white/80 backdrop-blur-sm shadow-sm fixed top-0 left-0 right-0 z-10 border-b border-cyan-100">
+        <div className="p-4">
+          <h1 className="text-xl font-bold text-cyan-900">タスク管理</h1>
         </div>
+      </header>
+
+      <main className="pt-16 pb-24">
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="tasks">
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="px-4 space-y-2"
+              >
+                {tasks.map((task, index) => (
+                  <Draggable key={task.id} draggableId={task.id} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        className={`bg-white/90 backdrop-blur-sm rounded-xl shadow-sm p-4 
+                          ${snapshot.isDragging ? 'shadow-lg' : ''} 
+                          ${task.completed ? 'opacity-75' : ''} 
+                          border border-cyan-100`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div
+                            {...provided.dragHandleProps}
+                            className="mt-1 text-cyan-400 cursor-grab active:cursor-grabbing"
+                          >
+                            <GripVertical className="w-4 h-4" />
+                          </div>
+                          <button
+                            onClick={() => toggleTask(task.id)}
+                            className={`mt-1 rounded-full p-1 ${
+                              task.completed
+                                ? 'bg-cyan-100 text-cyan-500'
+                                : 'bg-gray-100 text-gray-400'
+                            }`}
+                          >
+                            <Check className="w-4 h-4" />
+                          </button>
+                          <div className="flex-1 min-w-0">
+                            {editingTaskId === task.id ? (
+                              <div className="space-y-2">
+                                <input
+                                  type="text"
+                                  value={editingTitle}
+                                  onChange={(e) => setEditingTitle(e.target.value)}
+                                  className="w-full px-2 py-1 border rounded-lg focus:ring-2 focus:ring-cyan-400 focus:outline-none"
+                                  autoFocus
+                                />
+                                <div className="flex gap-2">
+                                  <button
+                                    onClick={() => saveEdit(task.id)}
+                                    className="px-2 py-1 text-sm bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg hover:from-cyan-600 hover:to-blue-600"
+                                  >
+                                    保存
+                                  </button>
+                                  <button
+                                    onClick={() => setEditingTaskId(null)}
+                                    className="px-2 py-1 text-sm text-cyan-600 hover:text-cyan-800"
+                                  >
+                                    キャンセル
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div
+                                onClick={() => !task.completed && startEditing(task)}
+                                className={`text-cyan-900 ${
+                                  task.completed ? 'line-through' : 'cursor-pointer'
+                                }`}
+                              >
+                                {task.title}
+                              </div>
+                            )}
+                            {task.dueDate && (
+                              <div
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (!task.completed) {
+                                    setEditingDateTaskId(task.id);
+                                    setIsDatePickerOpen(true);
+                                  }
+                                }}
+                                className="text-sm text-cyan-600 mt-1 flex items-center gap-1 cursor-pointer hover:text-cyan-700"
+                              >
+                                <Calendar className="w-4 h-4" />
+                                {formatDateTime(task.dueDate, task.hasTime)}
+                              </div>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => deleteTask(task.id)}
+                            className="text-gray-400 hover:text-red-500"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm shadow-lg border-t border-cyan-100">
+        <form onSubmit={addTask} className="p-4">
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+                placeholder="新しいタスクを入力"
+                className="flex-1 px-4 py-2 border border-cyan-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                autoComplete="off"
+              />
+              <button
+                type="submit"
+                className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg px-4 py-2 
+                  hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 flex items-center"
+              >
+                <Plus className="w-5 h-5" />
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsDatePickerOpen(true)}
+              className="w-full px-4 py-2 text-left border border-cyan-200 rounded-lg flex items-center gap-2 
+                text-cyan-600 hover:bg-cyan-50 transition-colors"
+            >
+              <Calendar className="w-4 h-4" />
+              <span>{formatDateTime(selectedDateTime, hasTime)}</span>
+            </button>
+          </div>
+        </form>
       </footer>
+
+      {isDatePickerOpen && (
+        <DateTimePicker
+          initialDateTime={editingDateTaskId 
+            ? new Date(tasks.find(t => t.id === editingDateTaskId)?.dueDate)
+            : selectedDateTime}
+          onSave={handleDateTimeSave}
+          onClose={() => {
+            setIsDatePickerOpen(false);
+            setEditingDateTaskId(null);
+          }}
+        />
+      )}
     </div>
   );
-}
+};
+
+export default TaskManager;
