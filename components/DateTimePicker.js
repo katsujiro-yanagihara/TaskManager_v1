@@ -7,9 +7,9 @@ const DateTimePicker = ({
   onClose 
 }) => {
   const [date, setDate] = useState(initialDateTime || new Date());
-  const [useTime, setUseTime] = useState(false);
-  const [hours, setHours] = useState('');
-  const [minutes, setMinutes] = useState('');
+  const [useTime, setUseTime] = useState(initialDateTime ? initialDateTime.getHours() !== 0 || initialDateTime.getMinutes() !== 0 : false);
+  const [hours, setHours] = useState(initialDateTime && useTime ? initialDateTime.getHours().toString() : '');
+  const [minutes, setMinutes] = useState(initialDateTime && useTime ? initialDateTime.getMinutes().toString() : '');
 
   // 年の選択肢（現在年から5年後まで）
   const years = useMemo(() => 
