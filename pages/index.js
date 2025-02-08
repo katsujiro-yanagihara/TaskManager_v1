@@ -40,6 +40,12 @@ const TaskManager = () => {
     setNewTask('');
     setSelectedDateTime(new Date());
     setHasTime(false);
+    
+    // タスク追加時に一番上にスクロール
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'  // スムーズスクロール
+    });
   };
 
   const handleDateTimeSave = (dateTime, useTime) => {
