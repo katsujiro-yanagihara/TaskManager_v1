@@ -99,7 +99,7 @@ const TaskManager = () => {
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-blue-50">
       <header className="bg-white/80 backdrop-blur-sm shadow-sm fixed top-0 left-0 right-0 z-10 border-b border-cyan-100">
         <div className="p-4">
-          <h1 className="text-xl font-bold text-cyan-900">タスク管理</h1>
+          <h1 className="text-xl font-bold text-cyan-900">タスク管理アプリ</h1>
         </div>
       </header>
 
@@ -218,7 +218,7 @@ const TaskManager = () => {
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
                 placeholder="新しいタスクを入力"
-                className="flex-1 px-4 py-2 border border-cyan-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                className="flex-1 px-4 py-2 border border-cyan-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 text-cyan-900"
                 autoComplete="off"
               />
               <button
