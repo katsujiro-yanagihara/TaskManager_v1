@@ -7,19 +7,11 @@ const DateTimePicker = ({
   onClose 
 }) => {
   const [date, setDate] = useState(initialDateTime || new Date());
-  const [useTime, setUseTime] = useState(false);
-  const [hours, setHours] = useState('');
-  const [minutes, setMinutes] = useState('');
+  const hasExistingTime = initialDateTime && (initialDateTime.getHours() !== 0 || initialDateTime.getMinutes() !== 0);
+  const [useTime, setUseTime] = useState(hasExistingTime);
+  const [hours, setHours] = useState(hasExistingTime ? initialDateTime.getHours().toString() : '');
+  const [minutes, setMinutes] = useState(hasExistingTime ? initialDateTime.getMinutes().toString() : '');
   
-  // コンポーネントマウント時に既存の時間設定を反映
-  useEffect(() => {
-    if (initialDateTime && initialDateTime.hasTime) {
-      setUseTime(true);
-      setHours(initialDateTime.getHours().toString());
-      setMinutes(initialDateTime.getMinutes().toString());
-    }
-  }, [initialDateTime]);
-
   // 年の選択肢（現在年から5年後まで）
   const years = useMemo(() => 
     Array.from({ length: 6 }, (_, i) => new Date().getFullYear() + i),
