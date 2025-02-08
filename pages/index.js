@@ -272,7 +272,7 @@ const TaskManager = () => {
                 text-cyan-600 hover:bg-cyan-50 transition-colors"
             >
               <Calendar className="w-4 h-4" />
-              <span className="text-cyan-900">{formatDateTime(selectedDateTime, hasTime) || '期日を設定'}</span>
+              <span className="text-gray-400">{formatDateTime(selectedDateTime, hasTime) || '期日を設定'}</span>
             </button>
           </div>
         </form>
