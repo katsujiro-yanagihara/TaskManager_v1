@@ -58,14 +58,14 @@ const TaskManager = () => {
     const task = {
       id: Date.now().toString(),
       title: newTask,
-      dueDate: selectedDateTime,
+      dueDate: new Date(),
       hasTime: hasTime,
       completed: false
     };
 
     setTasks([task, ...tasks]);
     setNewTask('');
-    setSelectedDateTime(new Date());
+    setSelectedDateTime(null);
     setHasTime(false);
     
     // タスク追加時に一番上にスクロール
