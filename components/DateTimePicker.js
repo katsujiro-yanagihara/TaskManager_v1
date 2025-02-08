@@ -7,9 +7,12 @@ const DateTimePicker = ({
   onClose 
 }) => {
   const [date, setDate] = useState(initialDateTime || new Date());
-  const [useTime, setUseTime] = useState(initialDateTime ? initialDateTime.getHours() !== 0 || initialDateTime.getMinutes() !== 0 : false);
-  const [hours, setHours] = useState(initialDateTime && useTime ? initialDateTime.getHours().toString() : '');
-  const [minutes, setMinutes] = useState(initialDateTime && useTime ? initialDateTime.getMinutes().toString() : '');
+  // 編集モードかどうかを判定（タスク編集時はdueDate、新規作成時は現在時刻が渡される）
+  const isEditing = initialDateTime && initialDateTime.getTime() !== new Date().getTime();
+  
+  const [useTime, setUseTime] = useState(isEditing ? initialDateTime.getHours() !== 0 || initialDateTime.getMinutes() !== 0 : false);
+  const [hours, setHours] = useState(isEditing && useTime ? initialDateTime.getHours().toString() : '');
+  const [minutes, setMinutes] = useState(isEditing && useTime ? initialDateTime.getMinutes().toString() : '');
 
   // 年の選択肢（現在年から5年後まで）
   const years = useMemo(() => 
