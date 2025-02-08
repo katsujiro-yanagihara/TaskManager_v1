@@ -281,7 +281,7 @@ const TaskManager = () => {
       {isDatePickerOpen && (
         <DateTimePicker
           initialDateTime={editingDateTaskId 
-            ? new Date(tasks.find(t => t.id === editingDateTaskId)?.dueDate)
+            ? tasks.find(t => t.id === editingDateTaskId)?.dueDate
             : selectedDateTime}
           onSave={handleDateTimeSave}
           onClose={() => {
