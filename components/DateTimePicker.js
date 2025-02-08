@@ -153,41 +153,40 @@ const DateTimePicker = ({
                   <label className="block text-sm font-medium text-cyan-700 mb-1">
                     時
                   </label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {hourOptions.map((hour) => (
-                      <button
-                        key={hour}
-                        onClick={() => setHours(hour.toString())}
-                        className={`p-2 rounded-lg text-cyan-900 ${
-                          hours === hour.toString()
-                            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
-                            : 'hover:bg-cyan-50'
-                        }`}
-                      >
-                        {hour}時
-                      </button>
+                  <select
+                    className="w-full px-3 py-2 border border-cyan-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 text-cyan-900"
+                    value={hours}
+                    onChange={(e) => {
+                      setHours(e.target.value);
+                      if (minutes === '') {
+                        setMinutes('0');
+                      }
+                    }}
+                  >
+                    <option value="">選択</option>
+                    {hourOptions.map(hour => (
+                      <option key={hour} value={hour}>
+                        {hour.toString().padStart(2, '0')}
+                      </option>
                     ))}
-                  </div>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-cyan-700 mb-1">
                     分
                   </label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {minuteOptions.map((minute) => (
-                      <button
-                        key={minute}
-                        onClick={() => setMinutes(minute.toString())}
-                        className={`p-2 rounded-lg text-cyan-900 ${
-                          minutes === minute.toString()
-                            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
-                            : 'hover:bg-cyan-50'
-                        }`}
-                      >
-                        {minute}分
-                      </button>
+                  <select
+                    className="w-full px-3 py-2 border border-cyan-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 text-cyan-900"
+                    value={minutes}
+                    onChange={(e) => setMinutes(e.target.value)}
+                  >
+                    <option value="">選択</option>
+                    {minuteOptions.map(minute => (
+                      <option key={minute} value={minute}>
+                        {minute.toString().padStart(2, '0')}
+                      </option>
                     ))}
-                  </div>
+                  </select>
                 </div>
               </div>
             )}
