@@ -58,7 +58,7 @@ const TaskManager = () => {
     const task = {
       id: Date.now().toString(),
       title: newTask,
-      dueDate: new Date(),
+      dueDate: selectedDateTime,
       hasTime: hasTime,
       completed: false
     };
