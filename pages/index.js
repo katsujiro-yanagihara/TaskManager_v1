@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Calendar, Check, GripVertical, Edit } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { format } from 'date-fns';
@@ -15,6 +15,33 @@ const TaskManager = () => {
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editingTitle, setEditingTitle] = useState('');
   const [editingDateTaskId, setEditingDateTaskId] = useState(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  // キーボードの表示/非表示を検知
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // iOSの場合
+      const handleVisualViewportResize = () => {
+        const viewport = window.visualViewport;
+        const height = viewport ? window.innerHeight - viewport.height : 0;
+        setKeyboardHeight(height);
+      };
+
+      // Androidの場合
+      const handleResize = () => {
+        const height = window.innerHeight - document.documentElement.clientHeight;
+        setKeyboardHeight(Math.max(0, height));
+      };
+
+      window.visualViewport?.addEventListener('resize', handleVisualViewportResize);
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.visualViewport?.removeEventListener('resize', handleVisualViewportResize);
+        window.addEventListener('resize', handleResize);
+      };
+    }
+  }, []);
 
   const formatDateTime = (dateTime, hasTimeFlag) => {
     if (!dateTime) return '';
@@ -215,8 +242,11 @@ const TaskManager = () => {
         </DragDropContext>
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm shadow-lg border-t border-cyan-100">
-        <form onSubmit={addTask} className="p-4">
+      <footer 
+        className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm shadow-lg border-t border-cyan-100"
+        style={{ bottom: `${keyboardHeight}px` }}
+      >
+        <form onSubmit={addTask} className="p-4 pb-8">
           <div className="space-y-2">
             <div className="flex gap-2">
               <input
