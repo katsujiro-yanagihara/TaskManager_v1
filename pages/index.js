@@ -279,7 +279,7 @@ const TaskManager = () => {
             >
               <Calendar className={`w-4 h-4 ${newTask.trim() ? 'text-cyan-900' : 'text-gray-400'}`} />
               <span className={`${newTask.trim() ? 'text-cyan-900' : 'text-gray-400'}`}>
-                {formatDateTime(selectedDateTime, hasTime) || '期日を設定'}
+                {'期日を設定'}
               </span>
             </button>
           </div>
@@ -290,7 +290,7 @@ const TaskManager = () => {
         <DateTimePicker
           initialDateTime={editingDateTaskId 
             ? tasks.find(t => t.id === editingDateTaskId)?.dueDate
-            : selectedDateTime}
+            : null}
           onSave={handleDateTimeSave}
           onClose={() => {
             setIsDatePickerOpen(false);
