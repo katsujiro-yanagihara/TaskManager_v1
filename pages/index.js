@@ -87,8 +87,6 @@ const TaskManager = () => {
       ));
       setEditingDateTaskId(null);
     } else {
-      setSelectedDateTime(dateTime);
-      setHasTime(useTime);
       const e = new Event('submit');
       e.preventDefault = () => {};
       addTask(e, dateTime, useTime);
