@@ -51,11 +51,9 @@ const DateTimePicker = ({
   const handleSave = () => {
     const selectedDate = new Date(date);
     if (useTime && hours !== '' && minutes !== '') {
-      selectedDate.setHours(parseInt(hours));
-      selectedDate.setMinutes(parseInt(minutes));
+      selectedDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);  // 秒とミリ秒を0に
     } else {
-      selectedDate.setHours(0);
-      selectedDate.setMinutes(0);
+      selectedDate.setHours(0, 0, 0, 0);  // 時分秒ミリ秒すべて0に
     }
     onSave(selectedDate, useTime);
   };
