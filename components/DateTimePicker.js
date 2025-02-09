@@ -194,12 +194,13 @@ const DateTimePicker = ({
           </div>
 
           <button
-            onClick={handleSave}
-            className="w-full px-4 py-3.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl 
-            hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 font-medium shadow-sm 
-            hover:shadow-md active:scale-[0.99]"
+            onClick={() => {
+              onSave(date, useTime);
+              addTask(new Event('submit'));
+            }}
+            className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-3 rounded-lg font-medium"
           >
-            設定
+            タスクを登録
           </button>
         </div>
       </div>

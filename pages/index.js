@@ -51,15 +51,15 @@ const TaskManager = () => {
     return format(date, 'yyyy年M月d日(E) HH:mm', { locale: ja });
   };
 
-  const addTask = (e) => {
+  const addTask = (e, dateTime = selectedDateTime, useTime = hasTime) => {
     e.preventDefault();
     if (!newTask.trim()) return;
 
     const task = {
       id: Date.now().toString(),
       title: newTask,
-      dueDate: selectedDateTime,
-      hasTime: hasTime,
+      dueDate: dateTime,
+      hasTime: useTime,
       completed: false
     };
 
@@ -67,6 +67,7 @@ const TaskManager = () => {
     setNewTask('');
     setSelectedDateTime(null);
     setHasTime(false);
+    setIsDatePickerOpen(false);
     
     // タスク追加時に一番上にスクロール
     window.scrollTo({
@@ -268,8 +269,9 @@ const TaskManager = () => {
             <button
               type="button"
               onClick={() => setIsDatePickerOpen(true)}
+              disabled={!newTask.trim()}
               className="w-full px-4 py-2 text-left border border-cyan-200 rounded-lg flex items-center gap-2 
-                text-cyan-600 hover:bg-cyan-50 transition-colors"
+                text-cyan-600 hover:bg-cyan-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Calendar className="w-4 h-4" />
               <span className={selectedDateTime ? 'text-cyan-900' : 'text-gray-400'}>
