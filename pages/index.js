@@ -51,15 +51,15 @@ const TaskManager = () => {
     return format(date, 'yyyy年M月d日(E) HH:mm', { locale: ja });
   };
 
-  const addTask = (e, dateTime = selectedDateTime, useTime = hasTime) => {
+  const addTask = (e) => {
     e.preventDefault();
     if (!newTask.trim()) return;
 
     const task = {
       id: Date.now().toString(),
       title: newTask,
-      dueDate: dateTime,
-      hasTime: useTime,
+      dueDate: null,
+      hasTime: false,
       completed: false
     };
 
@@ -67,10 +67,9 @@ const TaskManager = () => {
     setNewTask('');
     setIsDatePickerOpen(false);
     
-    // タスク追加時に一番上にスクロール
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'  // スムーズスクロール
+      behavior: 'smooth'
     });
   };
 
