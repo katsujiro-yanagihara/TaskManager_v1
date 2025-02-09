@@ -1,19 +1,24 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { X } from 'lucide-react';
 
-const DateTimePicker = ({ 
-  initialDateTime, 
-  onSave, 
-  onClose 
+const DateTimePicker = ({
+  initialDateTime,
+  onSave,
+  onClose
 }) => {
   const defaultDate = new Date();
-  defaultDate.setHours(0, 0, 0, 0);  // 時刻部分をリセット
-  const [date, setDate] = useState(initialDateTime ? new Date(initialDateTime) : defaultDate);
-  const hasExistingTime = initialDateTime && (initialDateTime.getHours() !== 0 || initialDateTime.getMinutes() !== 0);
-  const [useTime, setUseTime] = useState(hasExistingTime);
-  const [hours, setHours] = useState(hasExistingTime ? initialDateTime.getHours().toString() : '');
-  const [minutes, setMinutes] = useState(hasExistingTime ? initialDateTime.getMinutes().toString() : '');
+  defaultDate.setHours(0, 0, 0, 0);
+
+  // まず初期値のDateオブジェクトを作成
+  const initialDate = initialDateTime ? new Date(initialDateTime) : defaultDate;
   
+  // 状態の初期化
+  const [date, setDate] = useState(initialDate);
+  const hasExistingTime = initialDateTime && (initialDate.getHours() !== 0 || initialDate.getMinutes() !== 0);
+  const [useTime, setUseTime] = useState(hasExistingTime);
+  const [hours, setHours] = useState(hasExistingTime ? initialDate.getHours().toString() : '');
+  const [minutes, setMinutes] = useState(hasExistingTime ? initialDate.getMinutes().toString() : '');
+
   // 年の選択肢（現在年から5年後まで）
   const years = useMemo(() => 
     Array.from({ length: 6 }, (_, i) => new Date().getFullYear() + i),
@@ -49,13 +54,19 @@ const DateTimePicker = ({
   );
 
   const handleSave = () => {
-    const selectedDate = new Date(date);
-    if (useTime && hours !== '' && minutes !== '') {
-      selectedDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-      onSave(selectedDate, true);  // 時刻指定ありの場合
-    } else {
-      selectedDate.setHours(0, 0, 0, 0);
-      onSave(selectedDate, false);  // 時刻指定なしの場合
+    try {
+      const selectedDate = new Date(date);
+      if (useTime && hours !== '' && minutes !== '') {
+        selectedDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+      } else {
+        selectedDate.setHours(0, 0, 0, 0);
+      }
+      
+      // タイムゾーンの調整をせずにそのままISOString形式に変換
+      onSave(selectedDate.toISOString(), useTime);
+    } catch (error) {
+      console.error('Date handling error:', error);
+      alert('日付の処理中にエラーが発生しました。もう一度お試しください。');
     }
   };
 
