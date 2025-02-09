@@ -44,7 +44,7 @@ const TaskManager = () => {
   }, []);
 
   const formatDateTime = (dateTime, hasTimeFlag) => {
-    if (!dateTime) return '';
+    if (!dateTime || dateTime === 'Invalid Date') return '';
     const date = new Date(dateTime);
     const dateStr = format(date, 'yyyy年M月d日(E)', { locale: ja });
     if (!hasTimeFlag) return dateStr;
@@ -85,12 +85,10 @@ const TaskManager = () => {
       ));
       setEditingDateTaskId(null);
     } else {
-      const e = new Event('submit');
-      e.preventDefault = () => {};
       const task = {
         id: Date.now().toString(),
         title: newTask,
-        dueDate: dateTime,
+        dueDate: dateTime || null,
         hasTime: useTime,
         completed: false
       };
