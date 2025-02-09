@@ -51,11 +51,12 @@ const DateTimePicker = ({
   const handleSave = () => {
     const selectedDate = new Date(date);
     if (useTime && hours !== '' && minutes !== '') {
-      selectedDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);  // 秒とミリ秒を0に
+      selectedDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+      onSave(selectedDate, true);  // 時刻指定ありの場合
     } else {
-      selectedDate.setHours(0, 0, 0, 0);  // 時分秒ミリ秒すべて0に
+      selectedDate.setHours(0, 0, 0, 0);
+      onSave(selectedDate, false);  // 時刻指定なしの場合
     }
-    onSave(selectedDate, useTime);
   };
 
   return (
@@ -194,9 +195,7 @@ const DateTimePicker = ({
           </div>
 
           <button
-            onClick={() => {
-              onSave(date, useTime);
-            }}
+            onClick={handleSave}
             className="w-full px-4 py-3.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl 
             hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 font-medium shadow-sm 
             hover:shadow-md active:scale-[0.99]"
