@@ -44,6 +44,7 @@ const TaskManager = () => {
   }, []);
 
   const formatDateTime = (dateTime, hasTimeFlag) => {
+    console.log('Formatting datetime:', { dateTime, hasTimeFlag });
     if (!dateTime) return '';
     const date = new Date(dateTime);
     const dateStr = format(date, 'yyyy年M月d日(E)', { locale: ja });
@@ -55,6 +56,8 @@ const TaskManager = () => {
     e.preventDefault();
     if (!newTask.trim()) return;
 
+    console.log('Creating task with:', { dateTime, useTime });  // デバッグ用
+
     const task = {
       id: Date.now().toString(),
       title: newTask,
@@ -62,6 +65,8 @@ const TaskManager = () => {
       hasTime: useTime,
       completed: false
     };
+
+    console.log('Created task:', task);  // デバッグ用
 
     setTasks([task, ...tasks]);
     setNewTask('');
@@ -77,6 +82,7 @@ const TaskManager = () => {
   };
 
   const handleDateTimeSave = (dateTime, useTime) => {
+    console.log('Saving datetime:', { dateTime, useTime, editingDateTaskId });
     if (editingDateTaskId) {
       setTasks(tasks.map(task =>
         task.id === editingDateTaskId ? {
@@ -89,7 +95,7 @@ const TaskManager = () => {
     } else {
       setSelectedDateTime(dateTime);
       setHasTime(useTime);
-      addTask(new Event('submit'));
+      addTask(new Event('submit'), dateTime, useTime);
     }
     setIsDatePickerOpen(false);
   };
@@ -211,6 +217,12 @@ const TaskManager = () => {
                               </div>
                             )}
                             {task.dueDate && (
+                              console.log('Displaying task:', { 
+                                taskId: task.id, 
+                                dueDate: task.dueDate, 
+                                hasTime: task.hasTime,
+                                formatted: formatDateTime(task.dueDate, task.hasTime)
+                              });
                               <div
                                 onClick={(e) => {
                                   e.stopPropagation();
