@@ -6,7 +6,9 @@ const DateTimePicker = ({
   onSave, 
   onClose 
 }) => {
-  const [date, setDate] = useState(initialDateTime || new Date());
+  const defaultDate = new Date();
+  defaultDate.setHours(0, 0, 0, 0);  // 時刻部分をリセット
+  const [date, setDate] = useState(initialDateTime ? new Date(initialDateTime) : defaultDate);
   const hasExistingTime = initialDateTime && (initialDateTime.getHours() !== 0 || initialDateTime.getMinutes() !== 0);
   const [useTime, setUseTime] = useState(hasExistingTime);
   const [hours, setHours] = useState(hasExistingTime ? initialDateTime.getHours().toString() : '');
