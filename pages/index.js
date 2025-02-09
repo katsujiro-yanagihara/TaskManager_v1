@@ -272,9 +272,9 @@ const TaskManager = () => {
               onClick={() => setIsDatePickerOpen(true)}
               disabled={!newTask.trim()}
               className="w-full px-4 py-2 text-left border border-cyan-200 rounded-lg flex items-center gap-2 
-                text-cyan-600 hover:bg-cyan-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                hover:bg-cyan-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Calendar className="w-4 h-4" />
+              <Calendar className={`w-4 h-4 ${newTask.trim() ? 'text-cyan-900' : 'text-gray-400'}`} />
               <span className={selectedDateTime ? 'text-cyan-900' : 'text-gray-400'}>
                 {formatDateTime(selectedDateTime, hasTime) || '期日を設定'}
               </span>
