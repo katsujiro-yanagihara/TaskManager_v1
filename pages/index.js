@@ -85,11 +85,18 @@ const TaskManager = () => {
       ));
       setEditingDateTaskId(null);
     } else {
-      setSelectedDateTime(dateTime);
-      setHasTime(useTime);
       const e = new Event('submit');
       e.preventDefault = () => {};
-      addTask(e, dateTime, useTime);
+      const task = {
+        id: Date.now().toString(),
+        title: newTask,
+        dueDate: dateTime,
+        hasTime: useTime,
+        completed: false
+      };
+      setTasks([task, ...tasks]);
+      setNewTask('');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     setIsDatePickerOpen(false);
   };
