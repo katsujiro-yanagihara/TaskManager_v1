@@ -58,8 +58,8 @@ const TaskManager = () => {
     const task = {
       id: Date.now().toString(),
       title: newTask,
-      dueDate: dateTime,
-      hasTime: useTime,
+      dueDate: selectedDateTime,
+      hasTime: hasTime,
       completed: false
     };
 
@@ -275,7 +275,7 @@ const TaskManager = () => {
                 hover:bg-cyan-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Calendar className={`w-4 h-4 ${newTask.trim() ? 'text-cyan-900' : 'text-gray-400'}`} />
-              <span className={selectedDateTime ? 'text-cyan-900' : 'text-gray-400'}>
+              <span className={`${newTask.trim() ? 'text-cyan-900' : 'text-gray-400'}`}>
                 {formatDateTime(selectedDateTime, hasTime) || '期日を設定'}
               </span>
             </button>
