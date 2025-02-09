@@ -9,7 +9,6 @@ import { Clock } from 'lucide-react';
 const TaskManager = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
-  const [selectedDateTime, setSelectedDateTime] = useState(null);
   const [hasTime, setHasTime] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState(null);
