@@ -89,7 +89,9 @@ const TaskManager = () => {
     } else {
       setSelectedDateTime(dateTime);
       setHasTime(useTime);
-      addTask(new Event('submit'), dateTime, useTime);
+      const e = new Event('submit');
+      e.preventDefault = () => {};
+      addTask(e, dateTime, useTime);
     }
     setIsDatePickerOpen(false);
   };
